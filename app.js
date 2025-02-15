@@ -155,9 +155,18 @@ app.use((req, res, next) => {
     next();
 });
 
+
+
 /* --------------------------
 Route Handlers
 -------------------------- */
+
+// Add this before other routes
+app.get("/", (req, res) => {
+  res.render("home");
+});
+
+
 app.use("/activities", activityRouter);
 app.use("/activities/:id/reviews", reviewRouter);
 app.use("/", userRouter);
