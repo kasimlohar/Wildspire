@@ -163,7 +163,7 @@ Route Handlers
 
 // Add this before other routes
 app.get("/", (req, res) => {
-  res.render("index");
+  res.redirect("/activities");
 });
 
 
