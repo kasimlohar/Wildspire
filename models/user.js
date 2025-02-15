@@ -112,8 +112,6 @@ userSchema.plugin(passportLocalMongoose, {
 });
 
 // Indexes
-userSchema.index({ email: 1 }, { unique: true });
-userSchema.index({ username: 1 }, { unique: true });
 userSchema.index({ createdAt: 1 });
 
 module.exports = mongoose.model("User", userSchema);
