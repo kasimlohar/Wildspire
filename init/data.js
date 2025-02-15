@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 // Reusable owner id for sample data. In a real application, this should come from the users collection.
-const sampleOwnerId = new mongoose.Types.ObjectId("67afabebaed97282998561c3");
+const sampleOwnerId = new mongoose.Types.ObjectId("67b064dad54d47acd5d30d5d");
 
 const activities = [
   {

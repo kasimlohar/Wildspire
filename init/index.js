@@ -1,9 +1,10 @@
+require('dotenv').config({ path: '../.env' });
 const mongoose = require("mongoose");
 const activities = require("./data.js");
 const Activity = require("../models/Activity.js");
 
-// Use the environment variable for MongoDB URL if provided, otherwise default to localhost
-const MONGO_URL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/wanderlust";
+// Use the environment variable for MongoDB URL
+const MONGO_URL = process.env.MONGO_URI || "mongodb://localhost:27017/wildspire";
 
 /**
  * Initializes the database by:

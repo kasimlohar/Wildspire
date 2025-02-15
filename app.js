@@ -73,6 +73,8 @@ app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+// Add trust proxy configuration right after app initialization
+app.set('trust proxy', 1); // Trust first proxy - required for Render deployment
 /* --------------------------
 Middleware Stack
 -------------------------- */
@@ -88,7 +90,8 @@ const limiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     // Add skip function for development
-    skip: () => process.env.NODE_ENV === 'development'
+    skip: () => process.env.NODE_ENV === 'development',
+    trustProxy: true,
 });
 
 // Only apply rate limiting to API routes if needed
