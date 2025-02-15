@@ -162,8 +162,8 @@ Route Handlers
 -------------------------- */
 
 // Add this before other routes
-app.get("/activities", (req, res) => {
-  res.render("home");
+app.get("/", (req, res) => {
+  res.render("index");
 });
 
 
