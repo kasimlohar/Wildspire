@@ -24,6 +24,7 @@ const passport = require("passport");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const { rateLimit } = require("express-rate-limit");
+const cors = require("cors"); // Add this line
 
 /* --------------------------
   Custom Modules
@@ -43,6 +44,27 @@ const userRouter = require("./routes/user");
   Initialization
   -------------------------- */
 const app = express();
+
+/* --------------------------
+   CORS Configuration
+   -------------------------- */
+// Replace with your actual Vercel domain(s)
+const allowedOrigins = [
+  "https://wildspire.vercel.app"
+];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 
 /* --------------------------
    Environment Variables
