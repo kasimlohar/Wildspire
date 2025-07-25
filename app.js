@@ -76,10 +76,7 @@ const port = process.env.PORT || 8080;
    -------------------------- */
    async function connectDB() {
     try {
-      await mongoose.connect(mongoURI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
+      await mongoose.connect(mongoURI);
       console.log("✅ Connected to MongoDB");
     } catch (err) {
       console.error("❌ MongoDB connection error:", err);
