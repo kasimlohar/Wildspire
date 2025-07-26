@@ -25,6 +25,7 @@ const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const { rateLimit } = require("express-rate-limit");
 const cors = require("cors"); // Add this line
+const { createServer } = require('http');
 
 /* --------------------------
   Custom Modules
@@ -50,12 +51,13 @@ const app = express();
    -------------------------- */
 // Replace with your actual Vercel domain(s)
 const allowedOrigins = [
-  "https://wildspire.vercel.app"
+  "https://your-vercel-app-name.vercel.app",
+  "https://wildspire.vercel.app" // Replace with your actual domain
 ];
 
+// CORS configuration
 app.use(cors({
   origin: function(origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, etc.)
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) !== -1) {
       return callback(null, true);
@@ -75,17 +77,19 @@ const port = process.env.PORT || 8080;
    Database Connection
    -------------------------- */
    async function connectDB() {
-    try {
-      await mongoose.connect(mongoURI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
-      console.log("✅ Connected to MongoDB");
-    } catch (err) {
-      console.error("❌ MongoDB connection error:", err);
-      process.exit(1);
-    }
+  try {
+    await mongoose.connect(mongoURI, {
+      // Remove deprecated options, keep only these if needed
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
+    console.log("✅ Connected to MongoDB Atlas");
+  } catch (err) {
+    console.error("❌ MongoDB connection error:", err);
+    process.exit(1);
   }
+}
   
   connectDB();
 /* --------------------------
@@ -97,12 +101,17 @@ app.set("views", path.join(__dirname, "views"));
 
 // Add trust proxy configuration right after app initialization
 app.set('trust proxy', 1); // Trust first proxy - required for Render deployment
+
 /* --------------------------
 Middleware Stack
 -------------------------- */
 // Security Middleware
 // app.use(helmet());
 // app.use(mongoSanitize());
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable for now, configure later
+  crossOriginEmbedderPolicy: false
+}));
 
 // Rate Limiting - Adjust these values to be more lenient
 const limiter = rateLimit({
@@ -146,12 +155,13 @@ const sessionConfig = {
   name: "adventureSession",
   secret: SESSION_SECRET,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false, // Changed to false for production
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV === "production", // HTTPS in production
     expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
     maxAge: 7 * 24 * 60 * 60 * 1000,
+    sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax'
   },
 };
 
