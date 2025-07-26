@@ -24,8 +24,7 @@ const passport = require("passport");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const { rateLimit } = require("express-rate-limit");
-const cors = require("cors"); // Add this line
-const { createServer } = require('http');
+const cors = require("cors");
 
 /* --------------------------
   Custom Modules
@@ -49,25 +48,39 @@ const app = express();
 /* --------------------------
    Environment Variables
    -------------------------- */
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000; // Vercel uses dynamic ports
 
 /* --------------------------
    Database Connection
    -------------------------- */
-   async function connectDB() {
-    try {
-      await mongoose.connect(mongoURI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
-      console.log("✅ Connected to MongoDB");
-    } catch (err) {
-      console.error("❌ MongoDB connection error:", err);
+let isConnected = false;
+
+async function connectDB() {
+  if (isConnected) {
+    return;
+  }
+  
+  try {
+    await mongoose.connect(mongoURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
+    isConnected = true;
+    console.log("✅ Connected to MongoDB");
+  } catch (err) {
+    console.error("❌ MongoDB connection error:", err);
+    // Don't exit in serverless environment
+    if (process.env.NODE_ENV !== 'production') {
       process.exit(1);
     }
   }
-  
-  connectDB();
+}
+
+// Connect to database
+connectDB();
+
 /* --------------------------
 View Engine Configuration
 -------------------------- */
@@ -75,36 +88,42 @@ app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// Add trust proxy configuration right after app initialization
-app.set('trust proxy', 1); // Trust first proxy - required for Render deployment
+// Trust proxy configuration for Vercel
+app.set('trust proxy', 1);
 
 /* --------------------------
 Middleware Stack
 -------------------------- */
 // Security Middleware
-// app.use(helmet());
-// app.use(mongoSanitize());
 app.use(helmet({
-  contentSecurityPolicy: false, // Disable for now, configure later
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://api.mapbox.com"],
+      imgSrc: ["'self'", "data:", "https:", "http:"],
+      connectSrc: ["'self'", "https://api.mapbox.com"],
+      fontSrc: ["'self'", "https://cdn.jsdelivr.net"],
+    },
+  },
   crossOriginEmbedderPolicy: false
 }));
 
-// Rate Limiting - Adjust these values to be more lenient
+app.use(mongoSanitize());
+
+// Rate Limiting - More restrictive for production
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 1000, // Increased from 100 to 1000 requests per window
-    message: 'Too many requests from this IP, please try again after 15 minutes',
-    standardHeaders: true,
-    legacyHeaders: false,
-    // Add skip function for development
-    skip: () => process.env.NODE_ENV === 'development',
-    trustProxy: true,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV === 'production' ? 100 : 1000,
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: () => process.env.NODE_ENV === 'development',
+  trustProxy: true,
 });
 
-// Only apply rate limiting to API routes if needed
-app.use('/api', limiter); // Apply to API routes only
-// Remove or comment out the global rate limiter
-// app.use(limiter);
+// Apply rate limiting
+app.use('/api', limiter);
 
 // Static Assets
 app.use(express.static(path.join(__dirname, "public")));
@@ -113,6 +132,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
+// Session Store
 const store = MongoStore.create({
   mongoUrl: mongoURI,
   touchAfter: 24 * 3600,
@@ -125,22 +145,21 @@ store.on("error", function (e) {
   console.log("Session Store Error", e);
 });
 
-// Session Configuration
+// Session Configuration - Updated for production
 const sessionConfig = {
   store,
   name: "adventureSession",
   secret: SESSION_SECRET,
   resave: false,
-  saveUninitialized: false, // Changed to false for production
+  saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // HTTPS in production
+    secure: process.env.NODE_ENV === "production",
     expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax'
+    sameSite: process.env.NODE_ENV === "production" ? 'lax' : 'lax' // Changed from 'none'
   },
 };
-
 
 app.use(session(sessionConfig));
 
@@ -159,25 +178,31 @@ app.use((req, res, next) => {
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     res.locals.currUser = req.user;
-    res.locals.currentUrl = req.originalUrl; // Add this line for hero section visibility
+    res.locals.currentUrl = req.originalUrl;
     next();
 });
-
-
 
 /* --------------------------
 Route Handlers
 -------------------------- */
 
-// Add this before other routes
+// Home route
 app.get("/", (req, res) => {
   res.redirect("/activities");
 });
 
-
 app.use("/activities", activityRouter);
 app.use("/activities/:id/reviews", reviewRouter);
 app.use("/", userRouter);
+
+// Health check endpoint for Vercel
+app.get("/api/health", (req, res) => {
+  res.json({ 
+    status: "ok", 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
 
 /* --------------------------
    Error Handling
@@ -202,22 +227,38 @@ app.use((err, req, res, next) => {
     err.statusCode = 400;
   }
 
-  // Development vs Production error handling
-  if (process.env.NODE_ENV === "development") {
+  // Log errors in production
+  if (process.env.NODE_ENV === "production") {
+    console.error("Error:", {
+      message: err.message,
+      statusCode: err.statusCode,
+      stack: err.stack
+    });
+  } else {
     console.error("💥 Error Stack:", err.stack);
   }
 
-  res.status(statusCode).render("error", { 
-    message: err.message,
-    statusCode,
-    stack: process.env.NODE_ENV === "development" ? err.stack : null
-  });
+  // Send appropriate response
+  if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
+    res.status(statusCode).json({ error: message });
+  } else {
+    res.status(statusCode).render("error", { 
+      message: err.message,
+      statusCode,
+      stack: process.env.NODE_ENV === "development" ? err.stack : null
+    });
+  }
 });
 
 /* --------------------------
 Server Initialization
 -------------------------- */
-app.listen(port, () => {
-console.log(`🚀 Server running on port ${port}`);
-console.log(`🌐 Environment: ${process.env.NODE_ENV || "development"}`);
-});
+// For Vercel, we export the app instead of listening
+if (process.env.NODE_ENV === 'production') {
+  module.exports = app;
+} else {
+  app.listen(port, () => {
+    console.log(`🚀 Server running on port ${port}`);
+    console.log(`🌐 Environment: ${process.env.NODE_ENV || "development"}`);
+  });
+}

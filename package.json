@@ -13,7 +13,7 @@
     "vercel-build": "echo 'Ready for deployment'"
   },
   "engines": {
-    "node": "18.x"
+    "node": "22.x"
   },
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.16.1",
