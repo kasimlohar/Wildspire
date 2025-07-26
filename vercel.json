@@ -1,31 +1,15 @@
 {
   "version": 2,
-  "name": "wildspire",
   "builds": [
     {
       "src": "app.js",
-      "use": "@vercel/node",
-      "config": {
-        "maxLambdaSize": "50mb"
-      }
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/public/(.*)",
-      "dest": "/public/$1"
-    },
-    {
       "src": "/(.*)",
       "dest": "/app.js"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "functions": {
-    "app.js": {
-      "maxDuration": 30
-    }
-  }
+  ]
 }
