@@ -51,7 +51,7 @@ const app = express();
    -------------------------- */
 // Replace with your actual Vercel domain(s)
 const allowedOrigins = [
-  "https://your-vercel-app-name.vercel.app",
+  "https://wildspire-git-main-kasimlohar2-gmailcoms-projects.vercel.app",
   "https://wildspire.vercel.app" // Replace with your actual domain
 ];
 
