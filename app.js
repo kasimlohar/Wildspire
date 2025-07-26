@@ -47,28 +47,6 @@ const userRouter = require("./routes/user");
 const app = express();
 
 /* --------------------------
-   CORS Configuration
-   -------------------------- */
-// Replace with your actual Vercel domain(s)
-const allowedOrigins = [
-  "https://wildspire-git-main-kasimlohar2-gmailcoms-projects.vercel.app",
-  "https://wildspire.vercel.app" // Replace with your actual domain
-];
-
-// CORS configuration
-app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      return callback(null, true);
-    } else {
-      return callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true
-}));
-
-/* --------------------------
    Environment Variables
    -------------------------- */
 const port = process.env.PORT || 8080;
@@ -77,19 +55,17 @@ const port = process.env.PORT || 8080;
    Database Connection
    -------------------------- */
    async function connectDB() {
-  try {
-    await mongoose.connect(mongoURI, {
-      // Remove deprecated options, keep only these if needed
-      maxPoolSize: 10,
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
-    });
-    console.log("✅ Connected to MongoDB Atlas");
-  } catch (err) {
-    console.error("❌ MongoDB connection error:", err);
-    process.exit(1);
+    try {
+      await mongoose.connect(mongoURI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+      console.log("✅ Connected to MongoDB");
+    } catch (err) {
+      console.error("❌ MongoDB connection error:", err);
+      process.exit(1);
+    }
   }
-}
   
   connectDB();
 /* --------------------------
