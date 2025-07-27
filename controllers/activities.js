@@ -8,11 +8,26 @@ const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
 module.exports.index = async (req, res) => {
     try {
-        // Use projection to select only needed fields
-        const allActivities = await Activity.find({}, 'name images location price difficulty')
-            .lean(); // Use lean() for better performance
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 12;
+        
+        const options = {
+            page,
+            limit,
+            lean: true,
+            sort: { createdAt: -1 }
+        };
+        
+        const result = await Activity.paginate({}, options);
+        
         res.render("activities/index.ejs", { 
-            allActivities,
+            allActivities: result.docs,
+            pagination: {
+                page: result.page,
+                totalPages: result.totalPages,
+                hasNext: result.hasNextPage,
+                hasPrev: result.hasPrevPage
+            },
             currentUrl: req.originalUrl
         });
     } catch (err) {
