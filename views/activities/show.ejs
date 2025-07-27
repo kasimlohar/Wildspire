@@ -123,7 +123,7 @@
         </section>
 
          <!-- Owner Actions -->
-         <% if (currUser && activity.owner._id.equals(currUser._id)) { %>
+         <% if (typeof currUser !== 'undefined' && currUser && activity.owner._id.equals(currUser._id)) { %>
           <section class="border-top pt-5">
             <div class="d-flex gap-2">
               <a href="/activities/<%= activity._id %>/edit" class="btn btn-outline-primary">
@@ -154,7 +154,7 @@
         <!-- Reviews Section -->
         <section class="mt-5 pt-4 border-top">
           <!-- Add Review Form - Only show if user is logged in -->
-          <% if(currUser) { %>
+          <% if(typeof currUser !== 'undefined' && currUser) { %>
               <form action="/activities/<%= activity._id %>/reviews" method="POST" class="mb-4 needs-validation" novalidate>
                   <div class="mb-3">
                       <label class="form-label">Rating</label>
@@ -209,7 +209,7 @@
                                   </div>
                                   <p class="card-text"><%= review.comment %></p>
                                   <!-- Show delete button only to review author -->
-                                  <% if(currUser && review.author.equals(currUser._id)) { %>
+                                  <% if(typeof currUser !== 'undefined' && currUser && review.author.equals(currUser._id)) { %>
                                       <form action="/activities/<%= activity._id %>/reviews/<%= review._id %>?_method=DELETE" 
                                             method="POST"
                                             class="delete-review-form"
@@ -243,7 +243,7 @@
               <span class="text-muted">per person</span>
             </div>
             
-            <% if(currUser) { %>
+            <% if(typeof currUser !== 'undefined' && currUser) { %>
               <form class="booking-form needs-validation" novalidate>
                 <!-- Add booking form fields -->
                 <button class="btn btn-primary btn-lg w-100">Book Now</button>

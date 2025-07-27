@@ -24,7 +24,7 @@ const activities = [
       },
       {
         filename: "andaman_scuba4.png",
-        url: "https://i0.wp.com/andamanvenustravels.com/wp-content/uploads/2019/03/scuba-diving-in-andaman.png?resize=800%2C800",
+        url: "https://i0.wp.com/andamanvenustravels.com/wp-content/uploads/2019/03/scuba-diving-in-andaman.png",
       },
       {
         filename: "andaman_scuba5.jpg",
@@ -256,7 +256,7 @@ const activities = [
       },
       {
         filename: "gulmarg_skiing4.jpg",
-        url: "https://static.toiimg.com/photo/66273382/Skiing-kashmir.jpg?resize=4&width=748",
+        url: "https://static.toiimg.com/photo/66273382/Skiing-kashmir.jpg",
       },
     ],
     difficulty: "Intermediate",

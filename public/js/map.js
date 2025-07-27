@@ -33,6 +33,11 @@
       }
   
       validateCoordinates() {
+        // Check if activity and geometry are defined before accessing coordinates
+        if (!this.activity || !this.activity.geometry) {
+          console.error("Activity or geometry is undefined. Cannot validate coordinates.");
+          return false; // Or handle this case appropriately
+        }
         const [lng, lat] = this.activity.geometry.coordinates;
         return (
           typeof lng === 'number' && lng >= -180 && lng <= 180 &&
