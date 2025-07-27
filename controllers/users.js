@@ -12,6 +12,13 @@ module.exports = {
     try {
       const { email, username, password } = req.body;
       
+      // Validate password
+      const passwordError = validatePassword(password);
+      if (passwordError) {
+        req.flash("error", passwordError);
+        return res.redirect("/signup");
+      }
+      
       // Check existing email
       const existingEmail = await User.findOne({ email });
       if (existingEmail) {
@@ -24,7 +31,7 @@ module.exports = {
 
       req.login(registeredUser, err => {
         if (err) return next(err);
-        req.flash("success", "Welcome to AdventureHub!");
+        req.flash("success", "Welcome to WildSpire!");
         res.redirect("/activities");
       });
     } catch (err) {
