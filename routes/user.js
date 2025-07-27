@@ -44,4 +44,11 @@ router.route("/login")
  */
 router.get("/logout", userController.logout);
 
+// Add to existing user routes
+router.route("/profile")
+  .get(requireAuth, userController.renderProfile)
+  .put(requireAuth, userController.updateProfile);
+
+router.get("/profile/edit", requireAuth, userController.renderEditProfile);
+
 module.exports = router;
