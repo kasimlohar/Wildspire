@@ -24,6 +24,7 @@ const passport = require("passport");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const { rateLimit } = require("express-rate-limit");
+const csrf = require('csurf');
 
 /* --------------------------
   Custom Modules
@@ -275,4 +276,17 @@ Server Initialization
 app.listen(port, () => {
 console.log(`🚀 Server running on port ${port}`);
 console.log(`🌐 Environment: ${process.env.NODE_ENV || "development"}`);
+});
+
+// Add after session configuration
+const csrf = require('csurf');
+const csrfProtection = csrf({ cookie: true });
+
+// Apply globally or to specific routes
+app.use(csrfProtection);
+
+// Add to locals for templates
+app.use((req, res, next) => {
+    res.locals.csrfToken = req.csrfToken();
+    next();
 });
