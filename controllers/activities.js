@@ -8,10 +8,12 @@ const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
 module.exports.index = async (req, res) => {
     try {
-        const allActivities = await Activity.find({});
+        // Use projection to select only needed fields
+        const allActivities = await Activity.find({}, 'name images location price difficulty')
+            .lean(); // Use lean() for better performance
         res.render("activities/index.ejs", { 
             allActivities,
-            currentUrl: req.originalUrl // Add this line
+            currentUrl: req.originalUrl
         });
     } catch (err) {
         req.flash('error', 'Failed to load activities');
