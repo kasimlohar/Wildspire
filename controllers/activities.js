@@ -8,27 +8,43 @@ const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
 module.exports.index = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 12;
+        const { search, difficulty, minPrice, maxPrice, sort } = req.query;
         
-        const options = {
-            page,
-            limit,
-            lean: true,
-            sort: { createdAt: -1 }
-        };
+        // Build filter object
+        const filter = {};
         
-        const result = await Activity.paginate({}, options);
+        if (search) {
+            filter.$or = [
+                { name: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } },
+                { location: { $regex: search, $options: 'i' } }
+            ];
+        }
         
+        if (difficulty) {
+            filter.difficulty = difficulty;
+        }
+        
+        if (minPrice || maxPrice) {
+            filter.price = {};
+            if (minPrice) filter.price.$gte = parseFloat(minPrice);
+            if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
+        }
+        
+        // Build sort object
+        let sortObj = { createdAt: -1 }; // Default sort
+        if (sort === 'price-asc') sortObj = { price: 1 };
+        if (sort === 'price-desc') sortObj = { price: -1 };
+        if (sort === 'rating') sortObj = { averageRating: -1 };
+        
+        const allActivities = await Activity.find(filter)
+            .sort(sortObj)
+            .lean();
+            
         res.render("activities/index.ejs", { 
-            allActivities: result.docs,
-            pagination: {
-                page: result.page,
-                totalPages: result.totalPages,
-                hasNext: result.hasNextPage,
-                hasPrev: result.hasPrevPage
-            },
-            currentUrl: req.originalUrl
+            allActivities,
+            currentUrl: req.originalUrl,
+            searchParams: req.query // Pass search params to template
         });
     } catch (err) {
         req.flash('error', 'Failed to load activities');
