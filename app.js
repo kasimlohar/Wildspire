@@ -24,7 +24,8 @@ const passport = require("passport");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const { rateLimit } = require("express-rate-limit");
-const csrf = require('csurf');
+const csrf = require('csrf');
+const csurf = require('csurf');
 
 /* --------------------------
   Custom Modules
@@ -273,14 +274,24 @@ app.use((err, req, res, next) => {
 /* --------------------------
 Server Initialization
 -------------------------- */
-app.listen(port, () => {
-console.log(`🚀 Server running on port ${port}`);
-console.log(`🌐 Environment: ${process.env.NODE_ENV || "development"}`);
+// Add after server initialization
+const http = require('http');
+const socketIo = require('socket.io');
+
+const server = http.createServer(app);
+const io = socketIo(server);
+
+// Socket.io setup
+require('./sockets')(io);
+
+// Update server initialization
+server.listen(port, () => {
+  console.log(`🚀 Server running on port ${port}`);
+  console.log(`🌐 Environment: ${process.env.NODE_ENV || "development"}`);
 });
 
 // Add after session configuration
-const csrf = require('csurf');
-const csrfProtection = csrf({ cookie: true });
+const csrfProtection = csurf({ cookie: true });
 
 // Apply globally or to specific routes
 app.use(csrfProtection);

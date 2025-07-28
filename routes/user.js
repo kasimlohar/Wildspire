@@ -7,6 +7,7 @@ const rateLimit = require("express-rate-limit");
 const { preserveReturnTo } = require("../middleware.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const userController = require("../controllers/users.js");
+const { requireAuth } = require("../middleware.js");
 
 // Rate limiting for auth routes
 const authLimiter = rateLimit({
