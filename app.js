@@ -7,7 +7,14 @@ if (process.env.NODE_ENV !== "production") {
 
 // Update MongoDB connection string
 const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/wildspire";
-const SESSION_SECRET = process.env.SESSION_SECRET || "wildspireSecret";
+
+// Enforce SESSION_SECRET environment variable
+const SESSION_SECRET = process.env.SESSION_SECRET;
+
+if (!SESSION_SECRET) {
+    console.error('❌ SESSION_SECRET environment variable is required');
+    process.exit(1);
+}
 
 /* --------------------------
 Core Dependencies
@@ -94,7 +101,6 @@ app.use(helmet({
       ],
       scriptSrc: [
         "'self'",
-        "'unsafe-inline'",
         "https://cdn.jsdelivr.net",
         "https://api.mapbox.com",
         "https://unpkg.com",
@@ -140,6 +146,15 @@ app.use(helmet({
   },
   crossOriginEmbedderPolicy: false
 }));
+
+// Additional security headers
+app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    next();
+});
 
 // Rate Limiting - Adjust these values to be more lenient
 const limiter = rateLimit({
@@ -218,6 +233,40 @@ app.use((req, res, next) => {
 /* --------------------------
 Route Handlers
 -------------------------- */
+
+// Health check endpoint for monitoring and load balancers
+app.get('/health', (req, res) => {
+    const healthCheck = {
+        uptime: process.uptime(),
+        message: 'OK',
+        timestamp: Date.now(),
+        database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+        environment: process.env.NODE_ENV || 'development'
+    };
+    
+    try {
+        res.status(200).json(healthCheck);
+    } catch (error) {
+        healthCheck.message = 'ERROR';
+        res.status(503).json(healthCheck);
+    }
+});
+
+// Optional: Readiness check (more strict)
+app.get('/ready', (req, res) => {
+    if (mongoose.connection.readyState === 1) {
+        res.status(200).json({ 
+            status: 'ready',
+            timestamp: Date.now()
+        });
+    } else {
+        res.status(503).json({ 
+            status: 'not ready',
+            database: 'disconnected',
+            timestamp: Date.now()
+        });
+    }
+});
 
 // Add this before other routes
 app.get("/", (req, res) => {

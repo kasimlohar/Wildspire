@@ -34,4 +34,10 @@ const bookingSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Indexes for common queries
+bookingSchema.index({ user: 1 });
+bookingSchema.index({ activity: 1 });
+bookingSchema.index({ status: 1 });
+bookingSchema.index({ createdAt: -1 });
+
 module.exports = mongoose.model("Booking", bookingSchema);

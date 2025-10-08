@@ -13,22 +13,21 @@ module.exports.index = async (req, res) => {
         let query = {};
         
         if (search && search.trim()) {
-            query = {
-                $or: [
-                    { name: { $regex: search, $options: 'i' } },
-                    { description: { $regex: search, $options: 'i' } },
-                    { location: { $regex: search, $options: 'i' } }
-                ]
-            };
+            // Use MongoDB text index for better performance
+            query = { $text: { $search: search } };
         }
         
-        const allActivities = await Activity.find(query);
+        const allActivities = await Activity.find(query)
+            .select('-reviews') // Don't fetch reviews array in list view
+            .lean(); // Convert to plain JavaScript objects for better performance
+            
         res.render("activities/index.ejs", { 
             allActivities,
-            currentUrl: req.originalUrl, // Add this line
+            currentUrl: req.originalUrl,
             searchTerm: search || ''
         });
     } catch (err) {
+        console.error('Index error:', err);
         req.flash('error', 'Failed to load activities');
         res.redirect('/');
     }

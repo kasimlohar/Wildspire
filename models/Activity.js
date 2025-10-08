@@ -153,4 +153,14 @@ activitySchema.index({ geometry: '2dsphere' }); // Geospatial queries
 activitySchema.index({ difficulty: 1, price: 1 }); // Compound index
 activitySchema.index({ owner: 1 }); // User-specific queries
 
+// Text search index for better search performance
+activitySchema.index({ 
+  name: 'text', 
+  description: 'text', 
+  location: 'text' 
+});
+
+// Additional indexes for common queries
+activitySchema.index({ createdAt: -1 });
+
 module.exports = mongoose.model('Activity', activitySchema);
