@@ -1,0 +1,42 @@
+<% layout('/layouts/boilerplate') %>
+
+<div class="container mt-4">
+    <h1 class="mb-4">My Bookings</h1>
+    
+    <% if(bookings.length === 0) { %>
+        <div class="card text-center py-5">
+            <div class="card-body">
+                <i class="bi bi-calendar-x display-1 text-muted mb-3"></i>
+                <h3>No Bookings Yet</h3>
+                <p class="text-muted">Start exploring activities to make your first booking!</p>
+                <a href="/activities" class="btn btn-primary">Browse Activities</a>
+            </div>
+        </div>
+    <% } else { %>
+        <div class="row">
+            <% bookings.forEach(booking => { %>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= booking.activity.name %></h5>
+                            <ul class="list-unstyled">
+                                <li><strong>Date:</strong> <%= new Date(booking.bookingDate).toLocaleDateString() %></li>
+                                <li><strong>People:</strong> <%= booking.numberOfPeople %></li>
+                                <li><strong>Total:</strong> ₹<%= booking.totalPrice.toLocaleString('en-IN') %></li>
+                                <li>
+                                    <strong>Status:</strong> 
+                                    <span class="badge bg-<%= booking.status === 'confirmed' ? 'success' : 'warning' %>">
+                                        <%= booking.status.toUpperCase() %>
+                                    </span>
+                                </li>
+                            </ul>
+                            <a href="/activities/<%= booking.activity._id %>" class="btn btn-sm btn-outline-primary">
+                                View Activity
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</div>

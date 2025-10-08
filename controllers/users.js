@@ -50,5 +50,32 @@ module.exports = {
       req.flash("success", "Successfully logged out!");
       res.redirect("/activities");
     });
+  },
+
+  showProfile: async (req, res) => {
+    try {
+      const User = require("../models/user");
+      const user = await User.findById(req.params.id);
+      if (!user) {
+        req.flash('error', 'User not found');
+        return res.redirect('/activities');
+      }
+
+      const Activity = require('../models/Activity');
+      const Review = require('../models/review');
+      const Booking = require('../models/Booking');
+
+      const [activities, reviews, bookings] = await Promise.all([
+        Activity.find({ owner: user._id }).sort({ createdAt: -1 }).limit(10),
+        Review.find({ author: user._id }).populate('activity').sort({ createdAt: -1 }).limit(10),
+        Booking.find({ user: user._id }).populate('activity').sort({ createdAt: -1 }).limit(10)
+      ]);
+
+      res.render('users/profile', { profileUser: user, activities, reviews, bookings });
+    } catch (err) {
+      console.error('Profile error:', err);
+      req.flash('error', 'Failed to load profile');
+      res.redirect('/activities');
+    }
   }
 };

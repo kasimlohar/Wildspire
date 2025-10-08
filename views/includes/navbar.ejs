@@ -54,7 +54,8 @@ var currUser = typeof currUser !== 'undefined' ? currUser : null;
                             <i class="bi bi-person-circle"></i> <%= currUser.username %>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/activities">Profile</a></li>
+                            <li><a class="dropdown-item" href="/users/<%= currUser._id %>">Profile</a></li>
+                            <li><a class="dropdown-item" href="/bookings">My Bookings</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form action="/logout" method="POST" class="dropdown-item">

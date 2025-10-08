@@ -81,4 +81,20 @@ router.get("/:id/edit",
   wrapAsync(activityController.renderEditForm)
 );
 
+/**
+ * Booking Routes
+ * 
+ * POST /activities/:id/book - Create booking
+ * GET /activities/:id/bookings - Get user bookings
+ */
+router.post("/:id/book",
+  requireAuth,
+  wrapAsync(activityController.createBooking)
+);
+
+router.get("/:id/bookings",
+  requireAuth,
+  wrapAsync(activityController.getUserBookings)
+);
+
 module.exports = router;

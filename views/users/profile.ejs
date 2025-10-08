@@ -1,0 +1,136 @@
+<% layout('/layouts/boilerplate') %>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <div class="avatar-placeholder bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                         style="width: 100px; height: 100px; font-size: 2.5rem;">
+                        <%= profileUser.username.charAt(0).toUpperCase() %>
+                    </div>
+                    <h4 class="card-title"><%= profileUser.username %></h4>
+                    <p class="text-muted">
+                        <i class="bi bi-envelope me-1"></i><%= profileUser.email %>
+                    </p>
+                    <p class="text-muted small">
+                        Member since <%= new Date(profileUser.createdAt).toLocaleDateString() %>
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Activity Summary</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-pin-map text-primary me-2"></i><%= activities.length %> Activities Created</li>
+                        <li><i class="bi bi-star text-warning me-2"></i><%= reviews.length %> Reviews</li>
+                        <li><i class="bi bi-calendar-check text-success me-2"></i><%= bookings.length %> Bookings</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <!-- Tabs -->
+            <ul class="nav nav-tabs mb-4" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#activities-tab">
+                        Activities (<%= activities.length %>)
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#reviews-tab">
+                        Reviews (<%= reviews.length %>)
+                    </a>
+                </li>
+                <% if(typeof currUser !== 'undefined' && currUser && currUser._id.equals(profileUser._id)) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#bookings-tab">
+                            My Bookings (<%= bookings.length %>)
+                        </a>
+                    </li>
+                <% } %>
+            </ul>
+
+            <div class="tab-content">
+                <!-- Activities Tab -->
+                <div id="activities-tab" class="tab-pane fade show active">
+                    <% if(activities.length === 0) { %>
+                        <p class="text-muted">No activities created yet.</p>
+                    <% } else { %>
+                        <div class="row">
+                            <% activities.forEach(activity => { %>
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <img src="<%= activity.images[0].url %>" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                        <div class="card-body">
+                                            <h5 class="card-title"><%= activity.name %></h5>
+                                            <p class="card-text text-truncate"><%= activity.description %></p>
+                                            <a href="/activities/<%= activity._id %>" class="btn btn-sm btn-primary">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- Reviews Tab -->
+                <div id="reviews-tab" class="tab-pane fade">
+                    <% if(reviews.length === 0) { %>
+                        <p class="text-muted">No reviews yet.</p>
+                    <% } else { %>
+                        <% reviews.forEach(review => { %>
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="card-subtitle mb-2">
+                                            <a href="/activities/<%= review.activity._id %>"><%= review.activity.name %></a>
+                                        </h6>
+                                        <div>
+                                            <% for(let i = 0; i < review.rating; i++) { %>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    <p class="card-text"><%= review.comment %></p>
+                                    <small class="text-muted"><%= new Date(review.createdAt).toLocaleDateString() %></small>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } %>
+                </div>
+
+                <!-- Bookings Tab (only visible to owner) -->
+                <% if(typeof currUser !== 'undefined' && currUser && currUser._id.equals(profileUser._id)) { %>
+                    <div id="bookings-tab" class="tab-pane fade">
+                        <% if(bookings.length === 0) { %>
+                            <p class="text-muted">No bookings yet.</p>
+                        <% } else { %>
+                            <% bookings.forEach(booking => { %>
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="card-subtitle mb-2">
+                                                    <a href="/activities/<%= booking.activity._id %>"><%= booking.activity.name %></a>
+                                                </h6>
+                                                <p class="mb-1"><strong>Date:</strong> <%= new Date(booking.bookingDate).toLocaleDateString() %></p>
+                                                <p class="mb-1"><strong>People:</strong> <%= booking.numberOfPeople %></p>
+                                                <p class="mb-0"><strong>Total:</strong> ₹<%= booking.totalPrice.toLocaleString('en-IN') %></p>
+                                            </div>
+                                            <span class="badge bg-<%= booking.status === 'confirmed' ? 'success' : 'warning' %>">
+                                                <%= booking.status.toUpperCase() %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

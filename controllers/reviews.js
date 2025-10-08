@@ -58,3 +58,37 @@ module.exports.destroyReview = async (req, res) => {
         return res.redirect(`/activities/${req.params.id}`);
     }
 };
+
+module.exports.renderEditForm = async (req, res) => {
+    const { id, reviewId } = req.params;
+    const review = await Review.findById(reviewId);
+    const activity = await Activity.findById(id);
+    
+    if (!review) {
+        req.flash('error', 'Review not found');
+        return res.redirect(`/activities/${id}`);
+    }
+    
+    res.render('reviews/edit', { review, activity });
+};
+
+module.exports.updateReview = async (req, res) => {
+    try {
+        const { id, reviewId } = req.params;
+        const review = await Review.findByIdAndUpdate(
+            reviewId, 
+            { 
+                ...req.body.review,
+                editedAt: Date.now()
+            },
+            { new: true, runValidators: true }
+        );
+        
+        req.flash('success', 'Review updated successfully!');
+        res.redirect(`/activities/${id}`);
+    } catch (err) {
+        console.error('Review update error:', err);
+        req.flash('error', 'Failed to update review');
+        res.redirect(`/activities/${req.params.id}`);
+    }
+};

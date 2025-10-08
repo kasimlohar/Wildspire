@@ -1,0 +1,47 @@
+<% layout('/layouts/boilerplate') %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1 class="mb-4">Edit Review for <%= activity.name %></h1>
+            
+            <form action="/activities/<%= activity._id %>/reviews/<%= review._id %>?_method=PUT" 
+                  method="POST" 
+                  class="needs-validation" 
+                  novalidate>
+                
+                <div class="mb-3">
+                    <label class="form-label">Rating</label>
+                    <div class="star-rating">
+                        <% for(let i = 5; i >= 1; i--) { %>
+                            <input type="radio" 
+                                   id="edit-star<%= i %>" 
+                                   name="review[rating]" 
+                                   value="<%= i %>" 
+                                   class="star-input"
+                                   <%= review.rating === i ? 'checked' : '' %>>
+                            <label for="edit-star<%= i %>" class="star-label">
+                                <i class="bi bi-star-fill"></i>
+                            </label>
+                        <% } %>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="comment" class="form-label">Review</label>
+                    <textarea class="form-control" 
+                              id="comment" 
+                              name="review[comment]" 
+                              required 
+                              minlength="1"><%= review.comment %></textarea>
+                    <div class="invalid-feedback">Please provide a review comment</div>
+                </div>
+                
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success">Update Review</button>
+                    <a href="/activities/<%= activity._id %>" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

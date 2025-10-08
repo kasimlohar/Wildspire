@@ -4,9 +4,10 @@ const passport = require("passport");
 const rateLimit = require("express-rate-limit");
 
 // Middleware & Utilities
-const { preserveReturnTo } = require("../middleware.js");
+const { preserveReturnTo, requireAuth } = require("../middleware.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const userController = require("../controllers/users.js");
+const activityController = require("../controllers/activities.js");
 
 // Rate limiting for auth routes
 const authLimiter = rateLimit({
@@ -43,5 +44,17 @@ router.route("/login")
  * User Session Management
  */
 router.post("/logout", userController.logout);
+
+/**
+ * User Profile and Bookings
+ */
+router.get("/users/:id",
+  wrapAsync(userController.showProfile)
+);
+
+router.get("/bookings",
+  requireAuth,
+  wrapAsync(activityController.getUserBookings)
+);
 
 module.exports = router;

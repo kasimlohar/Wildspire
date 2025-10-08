@@ -23,4 +23,17 @@ router.delete("/:reviewId",
   wrapAsync(reviewController.destroyReview)  // Make sure this matches the exported method name
 );
 
+router.get("/:reviewId/edit",
+  requireAuth,
+  checkReviewAuthor,
+  wrapAsync(reviewController.renderEditForm)
+);
+
+router.put("/:reviewId",
+  requireAuth,
+  checkReviewAuthor,
+  validateReview,
+  wrapAsync(reviewController.updateReview)
+);
+
 module.exports = router;

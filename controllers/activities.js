@@ -1,4 +1,5 @@
 const Activity = require("../models/Activity");
+const Booking = require("../models/Booking");
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const { cloudinary } = require("../cloudConfig");
 const mapToken = process.env.MAP_TOKEN;
@@ -201,5 +202,48 @@ module.exports.destroyActivity = async (req, res) => {
         console.error('Delete error:', err);
         req.flash('error', 'Error deleting activity');
         return res.redirect(`/activities/${req.params.id}`);
+    }
+};
+
+module.exports.createBooking = async (req, res) => {
+    try {
+        const activity = await Activity.findById(req.params.id);
+        if (!activity) {
+            req.flash('error', 'Activity not found');
+            return res.redirect('/activities');
+        }
+
+        const { numberOfPeople, bookingDate } = req.body;
+        const totalPrice = activity.price * numberOfPeople;
+
+        const booking = new Booking({
+            activity: activity._id,
+            user: req.user._id,
+            numberOfPeople,
+            bookingDate,
+            totalPrice,
+            status: 'confirmed' // Mock as confirmed immediately
+        });
+
+        await booking.save();
+
+        req.flash('success', `Booking confirmed for ${activity.name}! (Demo - No payment processed)`);
+        res.redirect(`/activities/${activity._id}`);
+    } catch (err) {
+        console.error('Booking error:', err);
+        req.flash('error', 'Failed to create booking');
+        res.redirect(`/activities/${req.params.id}`);
+    }
+};
+
+module.exports.getUserBookings = async (req, res) => {
+    try {
+        const bookings = await Booking.find({ user: req.user._id })
+            .populate('activity')
+            .sort({ createdAt: -1 });
+        res.render('bookings/index', { bookings });
+    } catch (err) {
+        req.flash('error', 'Failed to load bookings');
+        res.redirect('/activities');
     }
 };
