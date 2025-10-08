@@ -128,7 +128,7 @@ activitySchema.post('findOneAndDelete', async function(doc) {
   try {
     if (doc?.reviews?.length) {
       await Review.deleteMany({ _id: { $in: doc.reviews } });
-      console.log(`Deleted ${doc.reviews.length} associated reviews`);
+      // console.log(`Deleted ${doc.reviews.length} associated reviews`);
     }
   } catch (err) {
     console.error('Error deleting associated reviews:', err);

@@ -48,9 +48,8 @@ module.exports.showActivity = async (req, res) => {
 
         res.render("activities/show", { 
             activity,
-            mapToken: process.env.MAP_TOKEN // Pass mapToken to template
+            mapToken: process.env.MAP_TOKEN
         });
-        // Check the log in controllers/activities.js
     } catch (err) {
         console.error("Map error:", err);
         req.flash("error", "Failed to load activity");

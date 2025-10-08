@@ -3,7 +3,6 @@ const Review = require("../models/review");
 
 module.exports.createReview = async (req, res) => {
     try {
-        console.log("Creating review with data:", req.body); // Debug log
         const activity = await Activity.findById(req.params.id);
         if (!activity) {
             req.flash('error', 'Activity not found');
@@ -16,8 +15,6 @@ module.exports.createReview = async (req, res) => {
             activity: activity._id
         });
 
-        console.log("Review object:", review); // Debug log
-
         await review.save();
         activity.reviews.push(review);
         await activity.save();
@@ -25,13 +22,12 @@ module.exports.createReview = async (req, res) => {
         req.flash('success', 'Review added successfully!');
         return res.redirect(`/activities/${activity._id}`);
     } catch (err) {
-        console.error('Review creation error:', err); // Better error logging
+        console.error('Review creation error:', err);
         req.flash('error', `Failed to create review: ${err.message}`);
         return res.redirect(`/activities/${req.params.id}`);
     }
 };
 
-// Remove deleteReview and keep only destroyReview with fixed logic
 module.exports.destroyReview = async (req, res) => {
     try {
         const { id, reviewId } = req.params;

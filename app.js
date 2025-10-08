@@ -54,10 +54,7 @@ const port = process.env.PORT || 8080;
    -------------------------- */
    async function connectDB() {
     try {
-      await mongoose.connect(mongoURI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
+      await mongoose.connect(mongoURI);
       console.log("✅ Connected to MongoDB");
     } catch (err) {
       console.error("❌ MongoDB connection error:", err);
@@ -158,8 +155,6 @@ const limiter = rateLimit({
 
 // Only apply rate limiting to API routes if needed
 app.use('/api', limiter); // Apply to API routes only
-// Remove or comment out the global rate limiter
-// app.use(limiter);
 
 // Static Assets
 app.use(express.static(path.join(__dirname, "public")));

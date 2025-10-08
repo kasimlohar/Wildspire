@@ -53,8 +53,8 @@ var currUser = typeof currUser !== 'undefined' ? currUser : null;
                             <li><a class="dropdown-item" href="/activities">Profile</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <form action="/logout" class="dropdown-item">
-                                    <button class="btn btn-link p-0">Logout</button>
+                                <form action="/logout" method="POST" class="dropdown-item">
+                                    <button type="submit" class="btn btn-link p-0">Logout</button>
                                 </form>
                             </li>
                         </ul>

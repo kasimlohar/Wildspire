@@ -89,7 +89,6 @@ module.exports = {
   validateReview: (req, res, next) => {
     const { error } = reviewSchema.validate(req.body);
     if (error) {
-        console.log("Validation error:", error); // Debug log
         const msg = error.details.map(el => el.message).join(',');
         req.flash('error', msg);
         return res.redirect(`/activities/${req.params.id}`);

@@ -44,7 +44,7 @@ module.exports = {
     res.redirect(redirectUrl);
   },
 
-  logout: (req, res) => {
+  logout: (req, res, next) => {
     req.logout(err => {
       if (err) return next(err);
       req.flash("success", "Successfully logged out!");
