@@ -35,9 +35,13 @@ var currUser = typeof currUser !== 'undefined' ? currUser : null;
                 <% } %>
             </ul>
 
-            <form class="d-flex me-3" action="/activities">
-                <input class="form-control me-2" type="search" name="search" placeholder="Search activities...">
-                <button class="btn btn-outline-light" type="submit">Search</button>
+            <form class="d-flex me-3" action="/activities" method="GET">
+                <input class="form-control me-2" type="search" name="search" 
+                       placeholder="Search activities..." 
+                       value="<%= typeof searchTerm !== 'undefined' ? searchTerm : '' %>">
+                <button class="btn btn-outline-light" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
             </form>
 
             <div class="navbar-nav">
@@ -64,3 +68,10 @@ var currUser = typeof currUser !== 'undefined' ? currUser : null;
         </div>
     </div>
 </nav>
+
+<!-- Demo Mode Banner -->
+<div class="alert alert-info alert-dismissible fade show mb-0 rounded-0 text-center" role="alert">
+    <i class="bi bi-info-circle me-2"></i>
+    <strong>Demo Mode:</strong> This is a portfolio project. Some features are simulated.
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>

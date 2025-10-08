@@ -8,10 +8,24 @@ const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
 module.exports.index = async (req, res) => {
     try {
-        const allActivities = await Activity.find({});
+        const { search } = req.query;
+        let query = {};
+        
+        if (search && search.trim()) {
+            query = {
+                $or: [
+                    { name: { $regex: search, $options: 'i' } },
+                    { description: { $regex: search, $options: 'i' } },
+                    { location: { $regex: search, $options: 'i' } }
+                ]
+            };
+        }
+        
+        const allActivities = await Activity.find(query);
         res.render("activities/index.ejs", { 
             allActivities,
-            currentUrl: req.originalUrl // Add this line
+            currentUrl: req.originalUrl, // Add this line
+            searchTerm: search || ''
         });
     } catch (err) {
         req.flash('error', 'Failed to load activities');
