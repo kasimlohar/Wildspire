@@ -48,9 +48,14 @@
     }
 
     showCustomError(input) {
-      const fieldName = input.getAttribute('data-field-name') || input.name;
+      const fieldName = input.getAttribute('data-field-name') || 
+                        input.name.split('[').pop().replace(']', '');
       const message = this.getValidationMessage(input, fieldName);
       this.displayError(input, message);
+      
+      // Add shake animation
+      input.classList.add('shake');
+      setTimeout(() => input.classList.remove('shake'), 500);
     }
 
     getValidationMessage(input, fieldName) {
@@ -109,5 +114,54 @@ document.addEventListener('DOMContentLoaded', function() {
             const starValue = label.previousElementSibling.value;
             label.classList.toggle('active', starValue <= rating);
         });
+    }
+});
+
+// Activity filtering and sorting
+document.addEventListener('DOMContentLoaded', () => {
+    const activityCards = document.querySelectorAll('.row.row-cols-1 > .col');
+    
+    // Difficulty filtering
+    document.querySelectorAll('[name="difficulty-filter"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            const filter = e.target.id.replace('filter-', '');
+            
+            activityCards.forEach(card => {
+                const badgeElement = card.querySelector('.badge');
+                const difficulty = badgeElement ? badgeElement.textContent.trim().toLowerCase() : '';
+                
+                if (filter === 'all' || difficulty === filter) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+    // Price sorting
+    document.getElementById('sort-price-asc')?.addEventListener('click', () => {
+        sortActivities('asc');
+    });
+    
+    document.getElementById('sort-price-desc')?.addEventListener('click', () => {
+        sortActivities('desc');
+    });
+    
+    function sortActivities(order) {
+        const container = document.querySelector('.row.row-cols-1');
+        const cards = Array.from(activityCards);
+        
+        cards.sort((a, b) => {
+            const priceTextA = a.querySelector('.text-muted')?.textContent || '0';
+            const priceTextB = b.querySelector('.text-muted')?.textContent || '0';
+            
+            const priceA = parseFloat(priceTextA.replace(/[^0-9.]/g, '')) || 0;
+            const priceB = parseFloat(priceTextB.replace(/[^0-9.]/g, '')) || 0;
+            
+            return order === 'asc' ? priceA - priceB : priceB - priceA;
+        });
+        
+        cards.forEach(card => container.appendChild(card));
     }
 });

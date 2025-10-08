@@ -72,10 +72,29 @@
     <!-- Application Scripts -->
     <script src="/js/script.js" defer></script>
     <script src="/js/loading.js" defer></script>
+    <script src="/js/toast.js" defer></script>
     
     <!-- Conditional Mapbox Initialization -->
     <script>
         mapboxgl.accessToken = '<%= process.env.MAP_TOKEN %>';
+    </script>
+    
+    <!-- Initialize toast notifications with flash messages -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const flashData = document.getElementById('flash-data');
+            if (!flashData) return;
+            
+            const success = flashData.dataset.success;
+            const error = flashData.dataset.error;
+            
+            if (success && window.toastNotification) {
+                window.toastNotification.show(success, 'success');
+            }
+            if (error && window.toastNotification) {
+                window.toastNotification.show(error, 'danger');
+            }
+        });
     </script>
 
     <!-- Noscript Fallback -->
