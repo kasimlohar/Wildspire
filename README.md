@@ -31,6 +31,18 @@ WildSpire is a full-stack web application designed for discovering and booking a
 
 ---
 
+## 🎥 Live Demo
+🌐 **[View Live Demo](https://wildspire.vercel.app/)** - Try it now!
+
+## 🔐 Demo Credentials
+```
+Email: demo@wildspire.com
+Password: Demo@123
+```
+*Note: This is a demo account for testing purposes. All data may be reset periodically.*
+
+---
+
 ## 🛠️ Tech Stack
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB, Mongoose
@@ -124,16 +136,6 @@ wildspire/
 
 ### Profile
 ![Profile](public/images/screenshots/profile.png)
-
-## 🎥 Live Demo
-🌐 **[View Live Demo](https://wildspire.vercel.app/)** - Try it now!
-
-## 🔐 Demo Credentials
-```
-Email: demo@wildspire.com
-Password: Demo@123
-```
-*Note: This is a demo account for testing purposes. All data may be reset periodically.*
 
 ---
 
