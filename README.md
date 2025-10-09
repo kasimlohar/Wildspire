@@ -4,6 +4,12 @@
 
 ![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen)
 ![MongoDB Version](https://img.shields.io/badge/mongodb-%3E%3D4.0.0-green)
+![License](https://img## 📞 Support
+
+For issues, questions, or suggestions:
+- **Email**: kasimlohar2@gmail.com
+- **GitHub Issues**: [Create Issue](https://github.com/kasimlohar/wildspire/issues)
+- **LinkedIn**: [Kasim Lohar](https://linkedin.com/in/kasimlohar)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 ---
@@ -49,7 +55,7 @@ Ensure you have the following installed before running the project:
 ### 1️⃣ Clone & Install Dependencies
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/wildspire.git
+git clone https://github.com/kasimlohar/wildspire.git
 cd wildspire
 
 # Install dependencies
@@ -119,8 +125,8 @@ wildspire/
 ### Profile
 ![Profile](public/images/screenshots/profile.png)
 
-## 🎥 Demo Video
-[Watch Demo on YouTube](#) *(Add link after recording)*
+## 🎥 Live Demo
+🌐 **[View Live Demo](https://wildspire.vercel.app/)** - Try it now!
 
 ## 🔐 Demo Credentials
 ```
@@ -256,7 +262,7 @@ Contributions are welcome! Please follow these steps:
 ### Development Setup for Contributors
 ```bash
 # Fork and clone the repo
-git clone https://github.com/YOUR_USERNAME/wildspire.git
+git clone https://github.com/kasimlohar/wildspire.git
 cd wildspire
 
 # Install dependencies
@@ -289,7 +295,7 @@ For issues, questions, or suggestions:
 - **Email**: kasimlohar@example.com
 - **GitHub Issues**: [Create Issue](https://github.com/kasimlohar/wildspire/issues)
 - **LinkedIn**: [Kasim Lohar](https://linkedin.com/in/kasimlohar)
-- **Portfolio**: [kasimlohar.dev](https://kasimlohar.dev)
+- **Github**: [kasimlohar](https://github.com/kasimlohar)
 
 ---
 
@@ -334,9 +340,9 @@ Special thanks to:
 ---
 
 ### Project Stats
-![GitHub stars](https://img.shields.io/github/stars/kasimlohar/wildspire?style=social)
-![GitHub forks](https://img.shields.io/github/forks/kasimlohar/wildspire?style=social)
-![GitHub watchers](https://img.shields.io/github/watchers/kasimlohar/wildspire?style=social)
+![GitHub stars](https://img.shields.io/github/stars/kasimlohar2/wildspire?style=social)
+![GitHub forks](https://img.shields.io/github/forks/kasimlohar2/wildspire?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/kasimlohar2/wildspire?style=social)
 
 Happy adventuring! 🏕️🌍
 
