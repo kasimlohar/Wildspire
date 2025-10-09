@@ -116,6 +116,9 @@ wildspire/
 ### Booking
 ![Booking](public/images/screenshots/booking.png)
 
+### Profile
+![Profile](public/images/screenshots/profile.png)
+
 ## 🎥 Demo Video
 [Watch Demo on YouTube](#) *(Add link after recording)*
 
