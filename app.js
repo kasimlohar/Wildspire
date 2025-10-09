@@ -101,6 +101,7 @@ app.use(helmet({
       ],
       scriptSrc: [
         "'self'",
+        "'unsafe-inline'", // Required for Mapbox and some inline scripts
         "https://cdn.jsdelivr.net",
         "https://api.mapbox.com",
         "https://unpkg.com",

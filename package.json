@@ -2,7 +2,7 @@
   "name": "wildspire",
   "version": "1.0.0",
   "description": "Adventure activity booking platform",
-  "license": "ISC",
+  "license": "MIT",
   "author": "Kasim Lohar",
   "type": "commonjs",
   "main": "app.js",
@@ -10,7 +10,9 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "build": "echo 'No build step needed'",
-    "vercel-build": "echo 'Ready for deployment'"
+    "vercel-build": "echo 'Ready for deployment'",
+    "init-db": "node init/index.js",
+    "seed": "node init/index.js"
   },
   "engines": {
     "node": "22.x"
