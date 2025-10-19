@@ -4,15 +4,7 @@
 
 ![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen)
 ![MongoDB Version](https://img.shields.io/badge/mongodb-%3E%3D4.0.0-green)
-![License](https://img## 📞 Support
-
-For issues, questions, or suggestions:
-- **Email**: kasimlohar2@gmail.com
-- **GitHub Issues**: [Create Issue](https://github.com/kasimlohar/wildspire/issues)
-- **LinkedIn**: [Kasim Lohar](https://linkedin.com/in/kasimlohar)
 ![License](https://img.shields.io/badge/license-MIT-blue)
-
----
 
 ## 🌟 Overview
 WildSpire is a full-stack web application designed for discovering and booking adventure activities. Users can explore thrilling locations, leave reviews, and manage their bookings seamlessly. Whether you're into hiking, kayaking, or rock climbing, WildSpire helps you plan your next adventure effortlessly.
@@ -342,9 +334,9 @@ Special thanks to:
 ---
 
 ### Project Stats
-![GitHub stars](https://img.shields.io/github/stars/kasimlohar2/wildspire?style=social)
-![GitHub forks](https://img.shields.io/github/forks/kasimlohar2/wildspire?style=social)
-![GitHub watchers](https://img.shields.io/github/watchers/kasimlohar2/wildspire?style=social)
+![GitHub stars](https://img.shields.io/github/stars/kasimlohar/wildspire?style=social)
+![GitHub forks](https://img.shields.io/github/forks/kasimlohar/wildspire?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/kasimlohar/wildspire?style=social)
 
 Happy adventuring! 🏕️🌍
 
